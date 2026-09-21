@@ -1,0 +1,1 @@
+Future<bool> checkVpnInterfaces() async => false;
