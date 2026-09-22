@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 class ApiConstants {
   // Platform-aware base URL: 10.0.2.2 for Android emulator, localhost for Web/Desktop
   static String get baseUrl {
-    return 'https://roadguarddemo.onrender.com/roadguard/v1';;
+    return 'https://roadguarddemo.onrender.com/roadguard/v1';
   }
 
   // Resolves relative image paths like /uploads/reports/xyz.jpg to full backend URLs
