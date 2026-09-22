@@ -1,6 +1,10 @@
 # Application Name
 spring.application.name=roadGuard-backend
 
+server.servlet.context-path= /roadguard/v1
+# JWT Configuration
+roadguard.jwt.secret = your_jwt_secret_key_here
+
 # Database Configuration
 spring.datasource.url=jdbc:postgresql://localhost:5432/RoadGuard
 spring.datasource.username=your_db_username
