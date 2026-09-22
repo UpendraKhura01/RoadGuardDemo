@@ -51,6 +51,7 @@ public class AuthService {
                 .userId(user.getId())
                 .username(user.getName())
                 .message("User registered successfully")
+                .token(token)
                 .build();
 
     }
