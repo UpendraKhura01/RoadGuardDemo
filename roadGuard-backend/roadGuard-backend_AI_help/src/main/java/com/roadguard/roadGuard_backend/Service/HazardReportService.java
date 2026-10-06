@@ -25,5 +25,10 @@ public interface HazardReportService {
 
     List<HazardReportResponseDto> getAllActiveReports();
 
+    List<HazardReportResponseDto> getNearbyReports(Authentication authentication);
+    List<HazardReportResponseDto> getCityReports(Authentication authentication);
+    List<HazardReportResponseDto> getDistrictReports(Authentication authentication);
+    List<HazardReportResponseDto> getStateReports(Authentication authentication);
+
     List<CitizenHazardReportResponseDto> getPublicReports(Double lat, Double lng, Double radiusKm);
 }

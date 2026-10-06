@@ -9,13 +9,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LocationDetailsDto {
-    private String road;
+public class UserProfileDto {
+    private Long id;
+    private String name;
+    private String phoneNumber;
+    private String gmail;
+    private Long reputationScore;
     private String ward;
     private String block;
     private String district;
     private String state;
-    private String country;
-    private String pinCode;
     private String fullAddress;
 }

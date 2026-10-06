@@ -11,6 +11,7 @@ import com.roadguard.roadGuard_backend.dto.CitizenHazardReportResponseDto;
 import com.roadguard.roadGuard_backend.dto.CreateHazardRequestDto;
 import com.roadguard.roadGuard_backend.dto.HazardReportResponseDto;
 import com.roadguard.roadGuard_backend.dto.LocationDetailsDto;
+import com.roadguard.roadGuard_backend.dto.ResolveLocationDto;
 import com.roadguard.roadGuard_backend.entity.*;
 import com.roadguard.roadGuard_backend.entity.types.HazardCategory;
 import com.roadguard.roadGuard_backend.entity.types.ImageSource;
@@ -50,7 +51,12 @@ public class HazardReportServiceImplementation implements HazardReportService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with user id :" + userid));
 
         ReportStatus initialStatus = reportSecurityCheckService.decideInitialStatus(request);
-        LocationDetailsDto locationsDetailsDto = reverseLocationService.resolveLocation(request);
+        LocationDetailsDto locationsDetailsDto = reverseLocationService.resolveLocation(
+                ResolveLocationDto.builder()
+                        .latitude(request.getLatitude())
+                        .longitude(request.getLongitude())
+                        .build()
+        );
 
         String imageUrl = imageStoringService.storeReportImage(photo);
         ReportImage image = ReportImage.builder()
@@ -68,9 +74,12 @@ public class HazardReportServiceImplementation implements HazardReportService {
                 .user(user)
                 .priorityScore(CalculateInitialScore(request.getReportedCategory(), initialStatus))
                 .reportedCategory(request.getReportedCategory())
-                .address(locationsDetailsDto.getAddress())
+                .address(locationsDetailsDto.getFullAddress())
                 .ward(locationsDetailsDto.getWard())
-                .city(locationsDetailsDto.getCity())
+                .city(locationsDetailsDto.getBlock())
+                .block(locationsDetailsDto.getBlock())
+                .district(locationsDetailsDto.getDistrict())
+                .state(locationsDetailsDto.getState())
                 .latitude(request.getLatitude())
                 .longitude(request.getLongitude())
                 .createdAt(request.getCapturedAt())
@@ -167,8 +176,8 @@ public class HazardReportServiceImplementation implements HazardReportService {
 
     @Override
     public List<HazardReportResponseDto> getAllActiveReports() {
-        List<ReportStatus> excluded = List.of(ReportStatus.REJECTED, ReportStatus.AI_REJECTED, ReportStatus.RESOLVED);
-        List<HazardReport> reports = hazardReportRepository.findByReportStatusNotIn(excluded);
+        
+        List<HazardReport> reports = hazardReportRepository.findAll();
         return reports.stream()
                 .map(report -> {
                     HazardReportResponseDto dto = modelMapper.map(report, HazardReportResponseDto.class);
@@ -178,6 +187,54 @@ public class HazardReportServiceImplementation implements HazardReportService {
                     return dto;
                 })
                 .toList();
+    }
+
+    @Override
+    public List<HazardReportResponseDto> getNearbyReports(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        if(user.getWard() == null) throw new IllegalArgumentException("Location is not set");
+        return hazardReportRepository.findByWard(user.getWard()).stream()
+                .map(r -> {
+                    HazardReportResponseDto dto = modelMapper.map(r, HazardReportResponseDto.class);
+                    if (r.getReportImage() != null) dto.setImageUrl(r.getReportImage().getUrl());
+                    return dto;
+                }).toList();
+    }
+
+    @Override
+    public List<HazardReportResponseDto> getCityReports(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        if(user.getBlock() == null) throw new IllegalArgumentException("Location is not set");
+        return hazardReportRepository.findByBlock(user.getBlock()).stream()
+                .map(r -> {
+                    HazardReportResponseDto dto = modelMapper.map(r, HazardReportResponseDto.class);
+                    if (r.getReportImage() != null) dto.setImageUrl(r.getReportImage().getUrl());
+                    return dto;
+                }).toList();
+    }
+
+    @Override
+    public List<HazardReportResponseDto> getDistrictReports(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        if(user.getDistrict() == null) throw new IllegalArgumentException("Location is not set");
+        return hazardReportRepository.findByDistrict(user.getDistrict()).stream()
+                .map(r -> {
+                    HazardReportResponseDto dto = modelMapper.map(r, HazardReportResponseDto.class);
+                    if (r.getReportImage() != null) dto.setImageUrl(r.getReportImage().getUrl());
+                    return dto;
+                }).toList();
+    }
+
+    @Override
+    public List<HazardReportResponseDto> getStateReports(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        if(user.getState() == null) throw new IllegalArgumentException("Location is not set");
+        return hazardReportRepository.findByState(user.getState()).stream()
+                .map(r -> {
+                    HazardReportResponseDto dto = modelMapper.map(r, HazardReportResponseDto.class);
+                    if (r.getReportImage() != null) dto.setImageUrl(r.getReportImage().getUrl());
+                    return dto;
+                }).toList();
     }
 
     @Override

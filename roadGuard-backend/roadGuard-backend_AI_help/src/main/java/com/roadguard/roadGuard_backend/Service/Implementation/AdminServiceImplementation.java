@@ -83,6 +83,17 @@ public class AdminServiceImplementation implements AdminService {
         report.setReportStatus(updates.getNewStatus());
         hazardReportRepository.save(report);
 
+        if ((updates.getNewStatus() == ReportStatus.VERIFIED && oldStatus != ReportStatus.VERIFIED) ||
+            (updates.getNewStatus() == ReportStatus.RESOLVED && oldStatus != ReportStatus.RESOLVED)) {
+            User reporter = report.getUser();
+            if (reporter != null) {
+                Long currentScore = reporter.getReputationScore();
+                if (currentScore == null) currentScore = 0L;
+                reporter.setReputationScore(currentScore + 10L);
+                userRepository.save(reporter);
+            }
+        }
+
         createStatusHistory(admin, report, oldStatus, updates.getNewStatus(), updates.getNotes());
         notificationService.createNotification(admin,
                 "Report Status Updated",

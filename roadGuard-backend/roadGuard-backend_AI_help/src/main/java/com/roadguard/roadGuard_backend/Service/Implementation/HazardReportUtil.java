@@ -22,11 +22,13 @@ public class HazardReportUtil {
             return;
         }
         FakeLikeliHood isFakeImage = aiAssessment.getFakeLikelihood();
-        if(isFakeImage == FakeLikeliHood.HIGH){
+        Boolean isValid = aiAssessment.getValidHazard();
+        Boolean isRoad = aiAssessment.getIsRoadImage();
+
+        if (isFakeImage == FakeLikeliHood.HIGH || Boolean.FALSE.equals(isValid) || Boolean.FALSE.equals(isRoad)) {
             report.setReportStatus(ReportStatus.AI_REJECTED);
             report.setPriorityScore(0);
-        }
-        else if(isFakeImage == FakeLikeliHood.LOW){
+        } else {
             report.setReportStatus(ReportStatus.PENDING_REVIEW);
         }
     }

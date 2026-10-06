@@ -5,9 +5,9 @@ import lombok.*;
 
 @Entity
 @Table(name = "contractor")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Builder
 public class Contractor {
 

@@ -47,7 +47,19 @@ public class User implements UserDetails {
     private Boolean isVerified = false;
 
     @Column(nullable = false)
+    @Builder.Default
     private Long reputationScore = 0L;
+
+    // Location fields
+    private Double longitude;
+    private Double latitude;
+    private String road;
+    private String ward;
+    private String block;
+    private String district;
+    private String state;
+    private String pinCode;
+    private String fullAddress;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

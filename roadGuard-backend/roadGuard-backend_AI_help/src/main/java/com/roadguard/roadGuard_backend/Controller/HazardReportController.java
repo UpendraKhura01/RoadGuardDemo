@@ -64,9 +64,27 @@ public class HazardReportController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/verifiedReports")
     public ResponseEntity<List<HazardReportResponseDto>> getVerifiedReports(Authentication authentication){
         List<HazardReportResponseDto> verifiedReports = hazardReportService.getVerifiedReports(authentication);
         return ResponseEntity.ok(verifiedReports);
     }
 
+    @GetMapping("/nearbyReports")
+    public ResponseEntity<List<HazardReportResponseDto>> getNearByReports(Authentication authentication){
+        List<HazardReportResponseDto> response = hazardReportService.getNearbyReports(authentication);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/cityReports")
+    public ResponseEntity<List<HazardReportResponseDto>> getCityReports(Authentication authentication){
+        List<HazardReportResponseDto> response = hazardReportService.getCityReports(authentication);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/DistrictReports")
+    public ResponseEntity<List<HazardReportResponseDto>> getDistrictReports(Authentication authentication){
+        List<HazardReportResponseDto> response = hazardReportService.getDistrictReports(authentication);
+        return ResponseEntity.ok(response);
+    }
 }

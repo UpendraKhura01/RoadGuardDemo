@@ -13,4 +13,9 @@ public interface HazardReportRepository extends JpaRepository<HazardReport, Long
     List<HazardReport> findByReportStatus(ReportStatus reportStatus);
 
     List<HazardReport> findByReportStatusNotIn(List<ReportStatus> statuses);
+
+    List<HazardReport> findByWard(String ward);
+    List<HazardReport> findByBlock(String block);
+    List<HazardReport> findByDistrict(String district);
+    List<HazardReport> findByState(String state);
 }

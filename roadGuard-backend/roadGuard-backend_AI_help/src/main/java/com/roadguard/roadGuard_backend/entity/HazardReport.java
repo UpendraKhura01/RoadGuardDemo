@@ -60,6 +60,9 @@ public class HazardReport {
     private String address;
     private String city;
     private String ward;
+    private String block;
+    private String district;
+    private String state;
 
     @OneToOne(fetch = FetchType.LAZY)
     private ReportSecurityCheck reportSecurityCheck;

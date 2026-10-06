@@ -9,11 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LocationsDetailsRootDto {
-    public String road;
-    public String village;
-    public String county;
-    public String state;
-    public String postcode;
-    public String country;
+public class ResolveLocationDto {
+    private Double latitude;
+    private Double longitude;
 }

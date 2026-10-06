@@ -25,6 +25,12 @@ public class AdminController {
     private final HazardReportService hazardReportService;
     private final ContractorRepository contractorRepository;
     private final HazardReportRepository hazardReportRepository;
+    private final com.roadguard.roadGuard_backend.Service.UserService userService;
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UserProfileDto>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
 
     @GetMapping("/reports")
     public ResponseEntity<List<HazardReportResponseDto>> getReportsByStatus(@RequestParam ReportStatus status){
@@ -96,7 +102,6 @@ public class AdminController {
                 .orElseThrow(() -> new IllegalArgumentException("Contractor not found: " + request.getContractorId()));
 
         report.setContractor(contractor);
-        // If report is VERIFIED or PENDING_REVIEW, move to ASSIGNED
         if (report.getReportStatus() == ReportStatus.VERIFIED
                 || report.getReportStatus() == ReportStatus.PENDING_REVIEW
                 || report.getReportStatus() == ReportStatus.SUBMITTED) {
@@ -104,5 +109,10 @@ public class AdminController {
         }
         hazardReportRepository.save(report);
         return ResponseEntity.ok(new ApiMessageResponseDto("Contractor assigned successfully"));
+    }
+
+    @GetMapping("/StateReports")
+    public ResponseEntity<List<HazardReportResponseDto>> getStateReports(Authentication authentication){
+        return ResponseEntity.ok(hazardReportService.getStateReports(authentication));
     }
 }
