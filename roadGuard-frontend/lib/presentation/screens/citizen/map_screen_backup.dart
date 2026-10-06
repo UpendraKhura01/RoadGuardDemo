@@ -27,7 +27,6 @@ class _MapScreenState extends State<MapScreen> {
   bool _isLoading = true;
   List<Map<String, dynamic>> _reports = [];
   String? _errorMessage;
-  String _searchQuery = '';
   late String _selectedMode;
 
   static const LatLng _defaultCenter = LatLng(20.5937, 78.9629);
@@ -319,7 +318,7 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final isAdmin = authProvider.userRole == 'ADMIN';
-    final modes = ['Nearby', 'City', if (isAdmin) 'State'];
+    final modes = ['Nearby', 'City', 'District', if (isAdmin) 'State'];
 
     return Scaffold(
       body: Stack(children: [
@@ -366,35 +365,6 @@ class _MapScreenState extends State<MapScreen> {
             ]),
           ),
         ),
-
-        if (_selectedMode == 'State' && isAdmin)
-          Positioned(
-            top: 76,
-            left: 16,
-            right: 16,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 2))],
-              ),
-              child: TextField(
-                decoration: const InputDecoration(
-                  hintText: 'Search District...',
-                  border: InputBorder.none,
-                  icon: Icon(Icons.search, color: Colors.grey),
-                ),
-                onChanged: (val) {
-                  setState(() {
-                    _searchQuery = val;
-                    final filtered = _searchQuery.isEmpty ? _reports : _reports.where((r) => r['district']?.toString().toLowerCase().contains(_searchQuery.toLowerCase()) == true).toList();
-                    _markers = _createMarkers(filtered);
-                  });
-                },
-              ),
-            ),
-          ),
 
         if (_errorMessage != null)
           Positioned(bottom: 20, left: 16, right: 16,
@@ -443,5 +413,4 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 }
-
 

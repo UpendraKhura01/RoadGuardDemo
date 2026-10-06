@@ -218,41 +218,75 @@ class _AdminReportsScreenState extends State<AdminReportsScreen> {
               const Divider(),
               const SizedBox(height: 12),
 
-              // Action buttons
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      icon: const Icon(Icons.rate_review),
-                      label: const Text('Review'),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                            // Action buttons
+              if (statusStr != 'RESOLVED' && statusStr != 'REJECTED' && statusStr != 'AI_REJECTED')
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (statusStr == 'PENDING_REVIEW' || statusStr == 'SUBMITTED')
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.rate_review),
+                        label: const Text('Review Report'),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _showReviewDialog(report);
+                        },
                       ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        _showReviewDialog(report);
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      icon: const Icon(Icons.person_add),
-                      label: const Text('Assign'),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        _showAssignDialog(report);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
+                    
+                    if (statusStr == 'VERIFIED' || statusStr == 'ASSIGNED' || statusStr == 'IN_PROGRESS') ...[
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              icon: const Icon(Icons.person_add),
+                              label: const Text('Assign'),
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                backgroundColor: Colors.blue,
+                                foregroundColor: Colors.white,
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                _showAssignDialog(report);
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              icon: const Icon(Icons.check_circle_outline),
+                              label: const Text('Resolve'),
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                backgroundColor: Colors.green,
+                                foregroundColor: Colors.white,
+                              ),
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                try {
+                                  await _reportService.updateReportStatus(
+                                    reportId: reportId,
+                                    newStatus: 'RESOLVED',
+                                  );
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Report marked as Resolved!')));
+                                    _loadReports();
+                                  }
+                                } catch (e) {
+                                  if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+                                }
+                              },
+                            ),
+                          ),
+                        ]
+                      )
+                    ]
+                  ],
+                ),
+                const SizedBox(height: 16),
             ],
           ),
         ),
@@ -640,3 +674,4 @@ class _AdminReportsScreenState extends State<AdminReportsScreen> {
     );
   }
 }
+

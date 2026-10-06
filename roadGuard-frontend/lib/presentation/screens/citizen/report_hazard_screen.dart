@@ -312,7 +312,7 @@ class _ReportHazardScreenState extends State<ReportHazardScreen> {
                       ElevatedButton.icon(
                         onPressed: _pickImage,
                         icon: const Icon(Icons.camera_alt),
-                        label: Text(kIsWeb ? 'Upload Photo' : 'Capture Photo'),
+                        label: const Text(kIsWeb ? 'Upload Photo' : 'Capture Photo'),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(double.infinity, 48),
                         ),

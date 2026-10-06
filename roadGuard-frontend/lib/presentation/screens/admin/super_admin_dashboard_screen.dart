@@ -2,40 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../auth/login_screen.dart';
-import 'admin_overview_screen.dart';
-import 'admin_reports_screen.dart';
-import 'admin_contractors_screen.dart';
-import '../citizen/map_screen.dart';
+import 'admin_users_screen.dart';
 
-class AdminDashboardScreen extends StatefulWidget {
-  const AdminDashboardScreen({super.key});
+class SuperAdminDashboardScreen extends StatefulWidget {
+  const SuperAdminDashboardScreen({super.key});
 
   @override
-  State<AdminDashboardScreen> createState() => _AdminDashboardScreenState();
+  State<SuperAdminDashboardScreen> createState() => _SuperAdminDashboardScreenState();
 }
 
-class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
+class _SuperAdminDashboardScreenState extends State<SuperAdminDashboardScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = const [
-    AdminOverviewScreen(),
-    MapScreen(initialMode: 'State'),
-    AdminReportsScreen(),
-    AdminContractorsScreen(),
+    Center(child: Text('Manage Admins Panel (Coming Soon)', style: TextStyle(fontSize: 24, color: Colors.grey))),
+    AdminUsersScreen(),
   ];
 
   final List<String> _titles = [
-    'Dashboard',
-    'Map View',
-    'Reports',
-    'Contractors',
+    'Manage Admins',
+    'Citizen Directory',
   ];
 
   final List<IconData> _icons = [
-    Icons.dashboard_outlined,
-    Icons.map_outlined,
-    Icons.list_alt_outlined,
-    Icons.engineering_outlined,
+    Icons.admin_panel_settings_outlined,
+    Icons.people_outline,
   ];
 
   @override
@@ -46,7 +37,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       backgroundColor: Colors.grey[100],
       appBar: isDesktop ? null : AppBar(
         title: Text(_titles[_currentIndex], style: const TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: const Color(0xFF1E293B),
+        backgroundColor: const Color(0xFF311B92),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -79,25 +70,11 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Row(
         children: [
-          Text(_titles[_currentIndex], style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF1E293B))),
+          Text(_titles[_currentIndex], style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF311B92))),
           const Spacer(),
-          Container(
-            width: 300,
-            height: 40,
-            decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(8)),
-            child: const TextField(
-              decoration: InputDecoration(
-                hintText: 'Search...',
-                prefixIcon: Icon(Icons.search, color: Colors.grey),
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              ),
-            ),
-          ),
-          const SizedBox(width: 24),
           IconButton(icon: const Icon(Icons.notifications_outlined), onPressed: () {}),
           const SizedBox(width: 16),
-          CircleAvatar(backgroundColor: Colors.teal.shade100, child: const Icon(Icons.person, color: Colors.teal)),
+          CircleAvatar(backgroundColor: Colors.deepPurple.shade100, child: const Icon(Icons.security, color: Colors.deepPurple)),
         ],
       ),
     );
@@ -108,7 +85,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     
     return Container(
       width: 260,
-      color: const Color(0xFF0F172A),
+      color: const Color(0xFF1A1A2E),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -116,15 +93,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             padding: EdgeInsets.fromLTRB(24, 32, 24, 32),
             child: Row(
               children: [
-                Icon(Icons.shield, color: Colors.blueAccent, size: 32),
+                Icon(Icons.gavel, color: Colors.purpleAccent, size: 32),
                 SizedBox(width: 12),
-                Text('RoadGuard', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+                Text('System Owner', style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
               ],
             ),
           ),
           const Padding(
             padding: EdgeInsets.only(left: 24, bottom: 8),
-            child: Text('ADMIN PANEL', style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 1.2)),
+            child: Text('SUPER ADMIN', style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: 1.2)),
           ),
           Expanded(
             child: ListView.builder(
@@ -135,13 +112,13 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   child: ListTile(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    tileColor: isSelected ? Colors.blueAccent.withValues(alpha: 0.15) : Colors.transparent,
-                    leading: Icon(_icons[index], color: isSelected ? Colors.blueAccent : Colors.grey[400]),
+                    tileColor: isSelected ? Colors.purpleAccent.withValues(alpha: 0.15) : Colors.transparent,
+                    leading: Icon(_icons[index], color: isSelected ? Colors.purpleAccent : Colors.grey[400]),
                     title: Text(_titles[index], style: TextStyle(color: isSelected ? Colors.white : Colors.grey[400], fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal)),
                     onTap: () {
                       setState(() => _currentIndex = index);
                       if (!MediaQuery.of(context).size.width.isFinite || MediaQuery.of(context).size.width <= 800) {
-                        Navigator.pop(context); // close drawer on mobile
+                        Navigator.pop(context); 
                       }
                     },
                   ),
@@ -149,17 +126,25 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
               },
             ),
           ),
-          const Divider(color: Colors.white12),
-          ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-            leading: const Icon(Icons.logout, color: Colors.redAccent),
-            title: const Text('Logout', style: TextStyle(color: Colors.redAccent)),
-            onTap: () async {
-              await authProvider.logout();
-              if (context.mounted) {
-                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const LoginScreen()), (route) => false);
-              }
-            },
+          Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: OutlinedButton.icon(
+              onPressed: () async {
+                await authProvider.logout();
+                if (mounted) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => const LoginScreen()),
+                    (route) => false,
+                  );
+                }
+              },
+              icon: const Icon(Icons.logout, color: Colors.redAccent),
+              label: const Text('Logout', style: TextStyle(color: Colors.redAccent)),
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: Colors.redAccent),
+                minimumSize: const Size(double.infinity, 48),
+              ),
+            ),
           ),
         ],
       ),

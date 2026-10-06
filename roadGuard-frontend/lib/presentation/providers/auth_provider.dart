@@ -27,6 +27,12 @@ class AuthProvider with ChangeNotifier {
       if (isAuth) {
         _userId = await _authService.getUserId();
         _userRole = await _authService.getUserRole();
+        
+        // Prevent citizens from accessing the web app
+        if (kIsWeb && _userRole != 'ADMIN') {
+          await logout();
+          throw Exception('Citizens must use the RoadGuard mobile app.');
+        }
       }
     } catch (e) {
       _errorMessage = e.toString();

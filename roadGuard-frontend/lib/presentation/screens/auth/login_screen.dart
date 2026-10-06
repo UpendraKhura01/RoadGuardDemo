@@ -4,6 +4,7 @@ import '../../providers/auth_provider.dart';
 import 'signup_screen.dart';
 import 'otp_verification_screen.dart';
 import '../citizen/home_screen.dart';
+import '../admin/super_admin_dashboard_screen.dart';
 import '../admin/admin_dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -62,7 +63,11 @@ class _LoginScreenState extends State<LoginScreen> {
         _passwordController.text,
       );
       if (success && mounted) {
-        if (authProvider.userRole == 'ADMIN') {
+        if (authProvider.userRole == 'SUPER_ADMIN') {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const SuperAdminDashboardScreen()),
+          );
+        } else if (authProvider.userRole == 'ADMIN') {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (_) => const AdminDashboardScreen()),
           );
@@ -91,10 +96,10 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Icon(
-                  Icons.warning_amber_rounded,
+                const Icon(
+                  Icons.add_road_rounded,
                   size: 80,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: Color(0xFF009688),
                 ),
                 const SizedBox(height: 16),
                 Text(

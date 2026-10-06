@@ -130,6 +130,35 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
                     .replaceFirst('T', '  '),
               ),
 
+              // AI Analysis Card
+              if ((report['aiExplanation'] != null && report['aiExplanation'].toString().isNotEmpty) ||
+                  (report['decisionReason'] != null && report['decisionReason'].toString().isNotEmpty)) ...[
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF0FFF4),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFF009688).withValues(alpha: 0.3)),
+                  ),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    const Row(children: [
+                      Icon(Icons.psychology_outlined, color: Color(0xFF009688), size: 18),
+                      SizedBox(width: 6),
+                      Text('AI Analysis', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF009688), fontSize: 13)),
+                    ]),
+                    if (report['aiExplanation'] != null && report['aiExplanation'].toString().isNotEmpty) ...[
+                      const SizedBox(height: 6),
+                      Text(report['aiExplanation'].toString(), style: TextStyle(fontSize: 13, color: Colors.grey[800])),
+                    ],
+                    if (report['decisionReason'] != null && report['decisionReason'].toString().isNotEmpty) ...[
+                      const SizedBox(height: 6),
+                      Text('Reason: ${report['decisionReason'].toString()}', style: TextStyle(fontSize: 12, color: Colors.grey[600], fontStyle: FontStyle.italic)),
+                    ],
+                  ]),
+                ),
+              ],
+
               // Photo
               if (report['imageUrl'] != null &&
                   report['imageUrl'].toString().isNotEmpty) ...[
@@ -183,6 +212,13 @@ class _MyReportsScreenState extends State<MyReportsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[50],
+      appBar: AppBar(
+        title: const Text('My Reports', style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: const Color(0xFF009688),
+        foregroundColor: Colors.white,
+        elevation: 0,
+      ),
       body: RefreshIndicator(
         onRefresh: _loadReports,
         child: _isLoading

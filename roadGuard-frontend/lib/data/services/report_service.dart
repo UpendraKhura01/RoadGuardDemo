@@ -133,6 +133,41 @@ class ReportService {
     }
   }
 
+  // Get reports filtered by user's ward (nearby)
+  Future<List<Map<String, dynamic>>> getNearbyReports() async {
+    return _fetchReportList('${ApiConstants.baseUrl}${ApiConstants.nearbyReports}');
+  }
+
+  // Get reports filtered by user's block/city
+  Future<List<Map<String, dynamic>>> getCityReports() async {
+    return _fetchReportList('${ApiConstants.baseUrl}${ApiConstants.cityReports}');
+  }
+
+  // Get reports filtered by user's district
+  Future<List<Map<String, dynamic>>> getDistrictReports() async {
+    return _fetchReportList('${ApiConstants.baseUrl}${ApiConstants.districtReports}');
+  }
+
+  // Get reports filtered by user's state (admin only)
+  Future<List<Map<String, dynamic>>> getStateReports() async {
+    return _fetchReportList('${ApiConstants.baseUrl}${ApiConstants.adminStateReports}');
+  }
+
+  Future<List<Map<String, dynamic>>> _fetchReportList(String url) async {
+    try {
+      final headers = await _authService.getAuthHeaders();
+      final response = await _client.get(Uri.parse(url), headers: headers);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        return data.map((item) => item as Map<String, dynamic>).toList();
+      } else {
+        throw Exception('Failed to fetch reports: ${response.body}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching reports: $e');
+    }
+  }
+
   // Get admin reports by status
   Future<List<Map<String, dynamic>>> getAdminReports(String status) async {
     try {
